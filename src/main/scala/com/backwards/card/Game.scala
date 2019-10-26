@@ -1,5 +1,6 @@
 package com.backwards.card
 
+import scala.util.Random
 import cats.data._
 import cats.effect.Console.io._
 import cats.effect.{ExitCode, IO, IOApp}
@@ -8,7 +9,7 @@ import com.backwards.card.CardShow._
 
 object Game extends IOApp {
   def run(args: List[String]): IO[ExitCode] = {
-    val cards = List(Blank, Blank, Exploding, Blank)
+    val cards: List[Card] = Random.shuffle(Exploding +: List.fill(16)(Blank))
 
     val game = new Game
     import game._

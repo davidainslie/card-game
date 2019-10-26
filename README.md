@@ -92,3 +92,24 @@ Or if you would like to view the **state** of the game while running:
 ```bash
 $ sbt '; set javaOptions += "-Ddebug=true"; run'
 ```
+
+## Version 1
+
+This application comes in two versions (flavours).
+
+- There is one player and 17 cards.
+- One of the cards is explosive and the rest are blank.
+- All the cards are shuffled and arranged face down in a draw pile.
+- The player draws cards one after the other.
+- If the card is blank, it has no effect, and can be discarded.
+- If the card is explosive, the player loses.
+
+To view the code regarding this version, after a **git clone**:
+
+```bash
+$ git tag
+1.0.0
+
+$ git checkout 1.0.0
+```
+
