@@ -3,13 +3,13 @@ package com.backwards.card
 import cats.Show
 
 object CardShow {
-  implicit val showCard: Show[Card] = {
+  implicit val cardShow: Show[Card] = {
     case Blank => "Blank"
     case Exploding => "Exploding"
   }
 
-  implicit val showOptionCard: Show[Option[Card]] = {
-    case Some(c: Card) => showCard.show(c)
+  implicit val optionCardShow: Show[Option[Card]] = {
+    case Some(c: Card) => cardShow show c
     case _ => "None"
   }
 }
