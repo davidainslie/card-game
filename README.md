@@ -131,3 +131,14 @@ Game enhancement:
       - Return the explosive card to the draw pile.
       - Re-shuffle the draw pile.
     - Explosive card, if the player does not have a defuse card: The player loses.
+
+To view the code regarding this version, after a **git clone**:
+
+```bash
+$ git tag
+1.0.0
+2.0.0
+
+$ git checkout 2.0.0
+```
+
