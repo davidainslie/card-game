@@ -11,22 +11,22 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 class GameSpec extends AnyWordSpec with MustMatchers with ScalaCheckDrivenPropertyChecks {
   "Initial state of the game" should {
     "have no cards" in new Game {
-      val noCards: List[Card] = Nil
-      val game: IO[(List[Card], Unit)] = state run noCards
+      val noCards: Cards = Cards(Nil, Nil)
+      val game: IO[(Cards, Unit)] = state run noCards
 
       game.unsafeRunSync mustEqual (noCards, ())
     }
 
     "have 1 Blank card" in new Game {
-      val cards: List[Card] = List(Blank)
-      val game: IO[(List[Card], Unit)] = state run cards
+      val cards: Cards = Cards(List(Blank), Nil)
+      val game: IO[(Cards, Unit)] = state run cards
 
       game.unsafeRunSync mustEqual (cards, ())
     }
 
     "have 2 Blank cards and 1 Exploding card" in new Game {
-      val cards: List[Card] = List(Blank, Exploding, Blank)
-      val game: IO[(List[Card], Unit)] = state run cards
+      val cards: Cards = Cards(List(Blank, Exploding, Blank), Nil)
+      val game: IO[(Cards, Unit)] = state run cards
 
       game.unsafeRunSync mustEqual (cards, ())
     }
@@ -34,19 +34,19 @@ class GameSpec extends AnyWordSpec with MustMatchers with ScalaCheckDrivenProper
 
   "End state of the game" should {
     "have a Blank card" in new Game {
-      val cards: List[Card] = List(Blank)
+      val cards: Cards = Cards(List(Blank), Nil)
       val endCard = Option(Blank)
-      val endState: StateT[IO, List[Card], Option[Card]] = end(endCard)
-      val game: IO[(List[Card], Option[Card])] = endState run cards
+      val endState: StateT[IO, Cards, Option[Card]] = end(endCard)
+      val game: IO[(Cards, Option[Card])] = endState run cards
 
       game.unsafeRunSync mustEqual (cards, endCard)
     }
 
     "have an Exploding card" in new Game {
-      val cards: List[Card] = List(Blank, Blank)
+      val cards: Cards = Cards(List(Blank, Blank), Nil)
       val endCard = Option(Exploding)
-      val endState: StateT[IO, List[Card], Option[Card]] = end(endCard)
-      val game: IO[(List[Card], Option[Card])] = endState run cards
+      val endState: StateT[IO, Cards, Option[Card]] = end(endCard)
+      val game: IO[(Cards, Option[Card])] = endState run cards
 
       game.unsafeRunSync mustEqual (cards, endCard)
     }
@@ -54,35 +54,55 @@ class GameSpec extends AnyWordSpec with MustMatchers with ScalaCheckDrivenProper
 
   "Game" should {
     "draw an Exploding card as the only available card" in new Game {
-      val cards: List[Card] = List(Exploding)
-      val game: IO[(List[Card], Option[Card])] = draw run cards
+      val cards: Cards = Cards(List(Exploding), Nil)
+      val game: IO[(Cards, Option[Card])] = draw run cards
 
-      game.unsafeRunSync mustEqual (Nil, Option(Exploding))
+      game.unsafeRunSync mustEqual (Cards(Nil, Nil), Option(Exploding))
     }
 
     "draw an Exploding card from deck of cards" in new Game {
-      val cards: List[Card] = List(Exploding, Blank, Blank)
-      val game: IO[(List[Card], Option[Card])] = draw run cards
+      val cards: Cards = Cards(List(Exploding, Blank, Blank), Nil)
+      val game: IO[(Cards, Option[Card])] = draw run cards
 
-      game.unsafeRunSync mustEqual (cards.drop(1), Option(Exploding))
+      game.unsafeRunSync mustEqual (Cards(cards.pack.drop(1), Nil), Option(Exploding))
     }
 
     "draw a Blank card as the only available card" in new Game {
-      override lazy val play: StateT[IO, List[Card], Option[Card]] = end(Option(Blank))
+      override lazy val play: StateT[IO, Cards, Option[Card]] = end(Option(Blank))
 
-      val cards: List[Card] = List(Blank)
-      val game: IO[(List[Card], Option[Card])] = draw run cards
+      val cards: Cards = Cards(List(Blank), Nil)
+      val game: IO[(Cards, Option[Card])] = draw run cards
 
-      game.unsafeRunSync mustEqual (Nil, Option(Blank))
+      game.unsafeRunSync mustEqual (Cards(Nil, Nil), Option(Blank))
     }
 
     "draw Blank cards until cards are exhausted" in new Game {
-      override lazy val play: StateT[IO, List[Card], Option[Card]] = draw
+      override lazy val play: StateT[IO, Cards, Option[Card]] = draw
 
-      val cards: List[Card] = List(Blank, Blank, Blank)
-      val game: IO[(List[Card], Option[Card])] = draw run cards
+      val cards: Cards = Cards(List(Blank, Blank, Blank), Nil)
+      val game: IO[(Cards, Option[Card])] = draw run cards
 
-      game.unsafeRunSync mustEqual (Nil, None)
+      game.unsafeRunSync mustEqual (Cards(Nil, Nil), None)
+    }
+  }
+
+  "Game with Defuse" should {
+    "draw an Exploding card and be defused by the only available Defuse" in new Game {
+      override lazy val play: StateT[IO, Cards, Option[Card]] = end(None)
+
+      val cards: Cards = Cards(List(Exploding), List(Defuse))
+      val game: IO[(Cards, Option[Card])] = draw run cards
+
+      game.unsafeRunSync mustEqual (Cards(List(Exploding), Nil), None)
+    }
+
+    "draw an Exploding card and be defused by one of the available Defuse" in new Game {
+      override lazy val play: StateT[IO, Cards, Option[Card]] = end(None)
+
+      val cards: Cards = Cards(List(Exploding), List(Defuse, Defuse))
+      val game: IO[(Cards, Option[Card])] = draw run cards
+
+      game.unsafeRunSync mustEqual (Cards(List(Exploding), List(Defuse)), None)
     }
   }
 

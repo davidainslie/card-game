@@ -113,3 +113,21 @@ $ git tag
 $ git checkout 1.0.0
 ```
 
+## Version 2
+
+Game enhancement:
+
+- Add three Defuse cards to the deck, making a total of 20.
+- Game set up:
+  - Give one defuse card to the player.
+  - Put the remaining two defuse cards with the rest in the draw pile, shuffle and arrange face down.
+- The player's turn consists of two steps:
+  - Draw one card
+  - There are four alternatives:
+    - Blank card: the turn finishes.
+    - Defuse card: add the defuse card to the player's hand and the turn finishes.
+    - Explosive card, if the player has a defuse card:
+      - Discard the defuse card onto the discard pile.
+      - Return the explosive card to the draw pile.
+      - Re-shuffle the draw pile.
+    - Explosive card, if the player does not have a defuse card: The player loses.
