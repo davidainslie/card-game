@@ -1,6 +1,6 @@
 # Exploding Cards
 
-Draw from a deck of **blank** cards, but watch out, on of them **explodes**... Dun, dun, dun!
+Draw from a deck of **blank** cards, but watch out, one of them **explodes**... Dun, dun, dun!
 
 ## The Game
 
