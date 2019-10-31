@@ -6,6 +6,7 @@ object CardShow {
   implicit val cardShow: Show[Card] = {
     case Blank => "Blank"
     case Exploding => "Exploding"
+    case Defuse => "Defuse"
   }
 
   implicit val optionCardShow: Show[Option[Card]] = {
