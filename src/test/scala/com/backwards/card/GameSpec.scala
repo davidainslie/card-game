@@ -4,6 +4,7 @@ import cats.data.StateT
 import cats.effect.IO
 import cats.implicits._
 import org.scalacheck.Gen
+import org.scalacheck.cats.implicits._
 import org.scalatest.MustMatchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
@@ -107,13 +108,10 @@ class GameSpec extends AnyWordSpec with MustMatchers with ScalaCheckDrivenProper
   }
 
   "Playing the Game" should {
+    def oneOf[A](as: A*): Gen[A] = Gen.oneOf(as.toSeq)
+
     "parse a 'draw' command" in new Game {
-      val drawGen: Gen[String] = for {
-        d <- Gen.oneOf("d", "D")
-        r <- Gen.oneOf("r", "R")
-        a <- Gen.oneOf("a", "A")
-        w <- Gen.oneOf("w", "W")
-      } yield d + r + a + w
+      val drawGen: Gen[String] = (oneOf("d", "D"), oneOf("r", "R"), oneOf("a", "A"), oneOf("w", "W")).mapN(_ + _ + _ + _)
 
       val commandGen: Gen[String] =
         Gen.oneOf(Gen.oneOf("d", "D"), drawGen)
@@ -124,12 +122,7 @@ class GameSpec extends AnyWordSpec with MustMatchers with ScalaCheckDrivenProper
     }
 
     "parse a 'quit' command" in new Game {
-      val quitGen: Gen[String] = for {
-        q <- Gen.oneOf("q", "Q")
-        u <- Gen.oneOf("u", "U")
-        i <- Gen.oneOf("i", "I")
-        t <- Gen.oneOf("t", "T")
-      } yield q + u + i + t
+      val quitGen: Gen[String] = (oneOf("q", "Q"), oneOf("u", "U"), oneOf("i", "I"), oneOf("t", "T")).mapN(_ + _ + _ + _)
 
       val commandGen: Gen[String] =
         Gen.oneOf(Gen.oneOf("q", "Q"), quitGen)

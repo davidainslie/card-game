@@ -25,6 +25,8 @@ object Dependencies {
       "org.typelevel" %% "cats-testkit"
     ).map(_ % version % "test") ++ Seq(
       "dev.profunktor" %% "console4cats" % "0.8.0"
+    ) ++ Seq(
+      "io.chrisdavenport" %% "cats-scalacheck" % "0.2.0" % "test"
     )
   }
   
