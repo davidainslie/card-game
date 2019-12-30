@@ -23,10 +23,10 @@ $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/inst
 With Docker we will be able to just run the game.
 
 ```bash
-# Install Docker
+Install Docker
 $ brew cask install docker
 
-# Start Docker
+Start Docker
 $ open /Applications/Docker.app
 ```
 

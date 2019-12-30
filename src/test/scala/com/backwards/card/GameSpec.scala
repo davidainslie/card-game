@@ -37,7 +37,7 @@ class GameSpec extends AnyWordSpec with MustMatchers with ScalaCheckDrivenProper
   "End state of the game" should {
     "have a Blank card" in new Game {
       val cards: Cards = Cards(List(Blank), Nil)
-      val endCard = Option(Blank)
+      val endCard: Option[Blank.type] = Option(Blank)
       val endState: StateT[IO, Cards, Option[Card]] = end(endCard)
       val game: IO[(Cards, Option[Card])] = endState run cards
 
@@ -46,7 +46,7 @@ class GameSpec extends AnyWordSpec with MustMatchers with ScalaCheckDrivenProper
 
     "have an Exploding card" in new Game {
       val cards: Cards = Cards(List(Blank, Blank), Nil)
-      val endCard = Option(Exploding)
+      val endCard: Option[Exploding.type] = Option(Exploding)
       val endState: StateT[IO, Cards, Option[Card]] = end(endCard)
       val game: IO[(Cards, Option[Card])] = endState run cards
 

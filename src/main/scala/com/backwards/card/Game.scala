@@ -7,6 +7,7 @@ import cats.implicits._
 import monocle.macros.syntax.lens._
 import com.backwards.card.CardShow._
 import com.backwards.card.Cards._
+import com.backwards.card.regex._
 
 object Game extends IOApp {
   def run(args: List[String]): IO[ExitCode] = {
@@ -28,8 +29,8 @@ class Game extends Synopsis {
   lazy val prompt: StateT[IO, Cards, Unit] = StateT.liftF(putStrLn("draw or quit:"))
 
   lazy val parseCommand: String => Command = {
-    case c if c.equalsIgnoreCase("draw") || c.equalsIgnoreCase("d") => Draw
-    case c if c.equalsIgnoreCase("quit") || c.equalsIgnoreCase("q") => Quit
+    case r"(?i)draw" | r"(?i)d" => Draw
+    case r"(?i)quit" | r"(?i)q" => Quit
     case c => Unknown(c)
   }
 
